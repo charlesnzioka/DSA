@@ -36,6 +36,30 @@ class Node:
             self.right.traversepostorder()
         print(self.data)
 
+    def height(self,h=0):
+        left_height = self.left.height(h + 1) if self.left else h
+        right_height = self.right.height(h + 1) if self.right else h
+        return max(left_height, right_height)
+
+    def getnodesatdepth(self, depth, nodes=[]):
+        if depth > self.height():
+            print("depth is greater than tree height!")
+            return None
+        if depth == 0:
+            nodes.append(self.data)
+            return nodes
+        if self.left:
+            self.left.getnodesatdepth(depth - 1, nodes)
+        else:
+            nodes.extend([None]*2**(depth - 1))
+
+        if self.right:
+            self.right.getnodesatdepth(depth - 1, nodes)
+        else:
+            nodes.extend([None]*2**(depth - 1))
+
+        return nodes
+
 
 class Tree:
     def __init__(self, root, name=''):
@@ -53,6 +77,12 @@ class Tree:
 
     def traversepostorder(self):
         self.root.traversepostorder()
+
+    def height(self):
+        return self.root.height()
+
+    def getnodesatdepth(self, depth):
+        return self.root.getnodesatdepth(depth)
 
 
 node = Node(10)
@@ -80,3 +110,18 @@ print('-'*10)
 print("Post Order Traversal")
 myTree.traversepostorder()
 print('-'*10)
+print(f'Tree height = {myTree.height()}')
+node1 = Node(50)
+node1.left = Node(25)
+node1.right = Node(75)
+node1.left.left = Node(13)
+node1.left.right = Node(35)
+node1.left.right.right = Node(37)
+node1.left.left.left = Node(2)
+node1.left.left.right = Node(20)
+node1.right.left = Node(55)
+node1.right.right = Node(103)
+node1.right.right.right = Node(256)
+
+myTree2 = Tree(node1, "Second Tree")
+print(myTree2.getnodesatdepth(3))
